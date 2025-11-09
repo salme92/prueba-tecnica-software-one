@@ -1,0 +1,38 @@
+<mat-sidenav-container class="layout-container">
+  <mat-sidenav mode="side" opened>
+    <mat-toolbar color="primary">Menú</mat-toolbar>
+
+    <mat-nav-list>
+      <a mat-list-item routerLink="/dashboard" routerLinkActive="active">
+        <mat-icon>dashboard</mat-icon>
+        <span>Dashboard</span>
+      </a>
+      <a mat-list-item routerLink="/profile" routerLinkActive="active">
+        <mat-icon>person</mat-icon>
+        <span>Perfil</span>
+      </a>
+      <a mat-list-item routerLink="/settings" routerLinkActive="active">
+        <mat-icon>settings</mat-icon>
+        <span>Configuración</span>
+      </a>
+      <a mat-list-item routerLink="/activity" routerLinkActive="active">
+        <mat-icon>history</mat-icon>
+        <span>Actividad</span>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <mat-toolbar color="primary">
+      <span>User Dashboard</span>
+      <span class="spacer"></span>
+      <button mat-icon-button>
+        <mat-icon>account_circle</mat-icon>
+      </button>
+    </mat-toolbar>
+
+    <main class="layout-content">
+      <router-outlet></router-outlet>
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>
