@@ -1,3 +1,4 @@
+// src/app/layouts/main-layout/main-layout.component.ts
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';

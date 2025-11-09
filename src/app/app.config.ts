@@ -1,16 +1,12 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection, isDevMode } from '@angular/core';
-import { provideRouter } from '@angular/router';
-
-import { routes } from './app.routes';
-import { provideServiceWorker } from '@angular/service-worker';
+// src/app/app.config.ts
+import { ApplicationConfig } from '@angular/core';
+import { provideRouter, withPreloading, PreloadAllModules } from '@angular/router';
+import { appRoutes } from './app.routes';
+import { provideHttpClient } from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideBrowserGlobalErrorListeners(),
-    provideZonelessChangeDetection(),
-    provideRouter(routes), provideServiceWorker('ngsw-worker.js', {
-            enabled: !isDevMode(),
-            registrationStrategy: 'registerWhenStable:30000'
-          })
-  ]
+    provideRouter(appRoutes, withPreloading(PreloadAllModules)),
+    provideHttpClient(),
+  ],
 };

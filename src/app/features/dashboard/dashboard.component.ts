@@ -1,3 +1,4 @@
+// src/app/features/dashboard/dashboard.component.ts
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
