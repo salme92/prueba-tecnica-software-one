@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { MainLayoutComponent } from './layouts/main/main-layout.component';
-
 export const appRoutes: Routes = [
   {
     path: '',
@@ -31,7 +30,14 @@ export const appRoutes: Routes = [
           import('./features/settings/settings.routes').then(
             (m) => m.SETTINGS_ROUTES
           ),
-      }
+      },
+      {
+        path: 'activity',
+        loadChildren: () =>
+          import('./features/activity/activity.routes').then(
+            (m) => m.ACTIVITY_ROUTES
+          ),
+      },
     ],
   },
   {

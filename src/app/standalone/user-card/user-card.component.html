@@ -1,0 +1,17 @@
+<mat-card class="user-card">
+  <ng-container *ngIf="loading">
+    <app-loading-spinner></app-loading-spinner>
+  </ng-container>
+
+  <ng-container *ngIf="error && !loading">
+    <p class="user-card__error">{{ error }}</p>
+  </ng-container>
+
+  <ng-container *ngIf="user && !loading && !error">
+    <h3 class="user-card__name">{{ user.name }}</h3>
+    <p class="user-card__email">{{ user.email }}</p>
+    <p class="user-card__username" *ngIf="user.username">
+      @{{ user.username }}
+    </p>
+  </ng-container>
+</mat-card>

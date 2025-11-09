@@ -1,0 +1,53 @@
+.activity {
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  &__subtitle {
+    margin: 4px 0 0;
+    color: #555;
+    font-size: 0.9rem;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  &__card {
+    padding: 16px;
+  }
+
+  &__filter {
+    width: 100%;
+    max-width: 320px;
+    margin-bottom: 16px;
+  }
+
+  &__loading {
+    padding: 12px;
+  }
+
+  &__error {
+    padding: 12px;
+    border-radius: 4px;
+    background-color: #ffebee;
+    color: #c62828;
+  }
+
+  &__table {
+    width: 100%;
+    margin-bottom: 8px;
+  }
+
+  .highlight {
+    background-color: #fff9c4 !important;
+    transition: background-color 0.5s ease;
+  }
+}

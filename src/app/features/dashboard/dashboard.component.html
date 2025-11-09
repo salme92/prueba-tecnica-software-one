@@ -3,7 +3,7 @@
     <div>
       <h2>Dashboard</h2>
       <p class="dashboard__subtitle">
-        Resumen de posts (API JSONPlaceholder) con paginación y búsqueda.
+        Resumen de posts (API JSONPlaceholder) con paginación, búsqueda y CRUD.
       </p>
     </div>
 
@@ -14,6 +14,13 @@
     </div>
   </header>
 
+  <!-- Usuario destacado -->
+  <section class="dashboard__user">
+    <h3>Usuario destacado</h3>
+    <app-user-card [userId]="1"></app-user-card>
+  </section>
+
+  <!-- Filtros -->
   <section class="dashboard__filters">
     <mat-form-field appearance="outline" class="dashboard__search-field">
       <mat-label>Buscar</mat-label>
@@ -26,6 +33,7 @@
     </mat-form-field>
   </section>
 
+  <!-- Listado de posts -->
   <section class="dashboard__content">
     <app-loading-spinner *ngIf="loading"></app-loading-spinner>
 
@@ -37,13 +45,17 @@
       <li
         class="dashboard__item"
         *ngFor="let post of posts; trackBy: trackByPostId"
+        (click)="selectPost(post)"
       >
-        <h3 class="dashboard__item-title">{{ post.title }}</h3>
+        <h3 class="dashboard__item-title">
+          #{{ post.id }} - {{ post.title }}
+        </h3>
         <p class="dashboard__item-body">{{ post.body }}</p>
       </li>
     </ul>
   </section>
 
+  <!-- Paginación -->
   <footer class="dashboard__footer" *ngIf="!loading && !error">
     <button
       mat-stroked-button
@@ -57,4 +69,57 @@
 
     <button mat-stroked-button (click)="nextPage()">Siguiente</button>
   </footer>
+
+  <!-- Editor CRUD -->
+  <section class="dashboard__editor">
+    <mat-card>
+      <header class="dashboard__editor-header">
+        <h3>
+          {{ isEditing ? 'Editar post' : 'Crear nuevo post' }}
+        </h3>
+        <button mat-button type="button" (click)="newPost()">
+          Nuevo
+        </button>
+      </header>
+
+      <form (ngSubmit)="savePost()" class="dashboard__editor-form">
+        <mat-form-field appearance="outline">
+          <mat-label>Título</mat-label>
+          <input
+            matInput
+            name="title"
+            [(ngModel)]="editablePost.title"
+            placeholder="Título del post"
+          />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Contenido</mat-label>
+          <textarea
+            matInput
+            name="body"
+            rows="4"
+            [(ngModel)]="editablePost.body"
+            placeholder="Contenido del post"
+          ></textarea>
+        </mat-form-field>
+
+        <div class="dashboard__editor-actions">
+          <button mat-raised-button color="primary" type="submit">
+            Guardar
+          </button>
+
+          <button
+            mat-stroked-button
+            color="warn"
+            type="button"
+            (click)="deletePost()"
+            [disabled]="!isEditing || !editablePost.id"
+          >
+            Eliminar
+          </button>
+        </div>
+      </form>
+    </mat-card>
+  </section>
 </section>

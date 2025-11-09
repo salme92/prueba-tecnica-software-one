@@ -1,0 +1,23 @@
+.user-card {
+  &__name {
+    margin: 0 0 4px;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  &__email {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #555;
+  }
+
+  &__username {
+    margin-top: 4px;
+    font-size: 0.85rem;
+    color: #777;
+  }
+
+  &__error {
+    color: #c62828;
+  }
+}

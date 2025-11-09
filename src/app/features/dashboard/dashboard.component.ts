@@ -4,21 +4,27 @@ import {
   Component,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ApiService, Post } from '../../core/services/api.service';
 import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatCardModule } from '@angular/material/card';
+import { UserCardComponent } from '../../standalone/user-card/user-card.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     LoadingSpinnerComponent,
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
+    MatCardModule,
+    UserCardComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
@@ -33,6 +39,10 @@ export class DashboardComponent {
   readonly pageSize = 10;
   searchTerm = '';
 
+  // Post en edición / creación
+  editablePost: Post = { title: '', body: '' };
+  isEditing = false;
+
   constructor(
     private api: ApiService,
     private cdr: ChangeDetectorRef
@@ -45,19 +55,20 @@ export class DashboardComponent {
     this.error = null;
     this.cdr.markForCheck();
 
-    this.api.getPosts(this.currentPage, this.pageSize, this.searchTerm).subscribe({
-      next: (posts) => {
-        this.posts = posts;
-        this.loading = false;
-        this.cdr.markForCheck();
-      },
-      error: (err) => {
-        console.error('Error cargando posts', err);
-        this.error = 'No se pudieron cargar los datos. Inténtalo de nuevo.';
-        this.loading = false;
-        this.cdr.markForCheck();
-      },
-    });
+    this.api
+      .getPosts(this.currentPage, this.pageSize, this.searchTerm)
+      .subscribe({
+        next: (posts) => {
+          this.posts = posts;
+          this.loading = false;
+          this.cdr.markForCheck();
+        },
+        error: () => {
+          this.error = 'No se pudieron cargar los datos. Inténtalo de nuevo.';
+          this.loading = false;
+          this.cdr.markForCheck();
+        },
+      });
   }
 
   reload(): void {
@@ -85,5 +96,75 @@ export class DashboardComponent {
 
   trackByPostId(_: number, item: Post): number | undefined {
     return item.id;
+  }
+
+  // ===== CRUD =====
+
+  selectPost(post: Post): void {
+    this.isEditing = true;
+    this.editablePost = { ...post };
+    this.cdr.markForCheck();
+  }
+
+  newPost(): void {
+    this.isEditing = false;
+    this.editablePost = { title: '', body: '' };
+    this.cdr.markForCheck();
+  }
+
+  savePost(): void {
+    if (!this.editablePost.title || !this.editablePost.body) {
+      alert('Título y cuerpo son obligatorios');
+      return;
+    }
+
+    if (this.isEditing && this.editablePost.id) {
+      // UPDATE
+      const id = this.editablePost.id;
+      this.api.updatePost(id, this.editablePost).subscribe({
+        next: (updated) => {
+          this.posts = this.posts.map((p) =>
+            p.id === id ? updated : p
+          );
+          this.newPost();
+          this.cdr.markForCheck();
+        },
+        error: (err) => {
+          console.error('Error actualizando post', err);
+          alert('No se pudo actualizar el post');
+        },
+      });
+    } else {
+      // CREATE
+      this.api.createPost(this.editablePost).subscribe({
+        next: (created) => {
+          this.posts = [created, ...this.posts];
+          this.newPost();
+          this.cdr.markForCheck();
+        },
+        error: (err) => {
+          console.error('Error creando post', err);
+          alert('No se pudo crear el post');
+        },
+      });
+    }
+  }
+
+  deletePost(): void {
+    if (!this.isEditing || !this.editablePost.id) return;
+    const id = this.editablePost.id;
+    if (!confirm('¿Seguro que quieres borrar este post?')) return;
+
+    this.api.deletePost(id).subscribe({
+      next: () => {
+        this.posts = this.posts.filter((p) => p.id !== id);
+        this.newPost();
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error('Error eliminando post', err);
+        alert('No se pudo eliminar el post');
+      },
+    });
   }
 }

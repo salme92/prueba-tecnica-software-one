@@ -61,6 +61,11 @@ export class ApiService {
   }
 
   // ===== USERS (para Perfil / validación asíncrona) =====
+
+  getUser(id: number): Observable<User> {
+    return this.http.get<User>(`${this.baseUrl}/users/${id}`);
+  }
+
   getUsers(params?: Record<string, string>): Observable<User[]> {
     let httpParams = new HttpParams();
 
