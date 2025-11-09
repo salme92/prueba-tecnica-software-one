@@ -3,12 +3,16 @@
     <div>
       <h2>Dashboard</h2>
       <p class="dashboard__subtitle">
-        Resumen de posts (API JSONPlaceholder) con paginación, búsqueda, CRUD y
-        gráfico simple.
+        Resumen de posts (API JSONPlaceholder) con paginación, búsqueda, CRUD,
+        gráfico simple y notificación PWA simulada.
       </p>
     </div>
 
     <div class="dashboard__actions">
+      <button mat-stroked-button type="button" (click)="simulatePushNotification()">
+        Probar notificación push
+      </button>
+
       <button mat-raised-button color="primary" (click)="reload()">
         Recargar
       </button>
@@ -58,16 +62,11 @@
     </div>
 
     <ul *ngIf="!loading && !error" class="dashboard__list">
-      <li
-        class="dashboard__item"
+      <app-post-item
         *ngFor="let post of posts; trackBy: trackByPostId"
-        (click)="selectPost(post)"
-      >
-        <h3 class="dashboard__item-title">
-          #{{ post.id }} - {{ post.title }}
-        </h3>
-        <p class="dashboard__item-body">{{ post.body }}</p>
-      </li>
+        [post]="post"
+        (selected)="selectPost($event)"
+      ></app-post-item>
     </ul>
   </section>
 

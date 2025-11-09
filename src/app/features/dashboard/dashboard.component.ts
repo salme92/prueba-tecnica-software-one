@@ -4,19 +4,17 @@ import {
   Component,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-  import { FormsModule } from '@angular/forms';
-import { ApiService, Post } from '../../core/services/api.service';
+import { FormsModule } from '@angular/forms';
+import { ApiService } from '../../core/services/api.service';
 import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
 import { UserCardComponent } from '../../standalone/user-card/user-card.component';
-
-interface PostsByUser {
-  userId: number;
-  count: number;
-}
+import { PostItemComponent } from '../../shared/components/post-item/post-item.component';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { Post, PostsByUser } from '../../core/models/app.models';
 
 @Component({
   selector: 'app-dashboard',
@@ -30,6 +28,8 @@ interface PostsByUser {
     MatInputModule,
     MatCardModule,
     UserCardComponent,
+    PostItemComponent,
+    MatSnackBarModule,
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
@@ -54,7 +54,8 @@ export class DashboardComponent {
 
   constructor(
     private api: ApiService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private snackBar: MatSnackBar
   ) {
     this.loadPosts();
   }
@@ -182,7 +183,7 @@ export class DashboardComponent {
   }
 
   // ===== Estadísticas para el gráfico =====
- 
+
   private computeStats(): void {
     const map = new Map<number, number>();
 
@@ -200,5 +201,17 @@ export class DashboardComponent {
       1
     );
     this.maxPostsPerUser = max || 1;
+  }
+
+  // ===== Notificación push simulada (bonus PWA) =====
+
+  simulatePushNotification(): void {
+    this.snackBar.open(
+      'Tienes una nueva actividad en tu dashboard (notificación simulada)',
+      'Cerrar',
+      {
+        duration: 3000,
+      }
+    );
   }
 }

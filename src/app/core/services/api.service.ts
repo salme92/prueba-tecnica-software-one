@@ -1,27 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
-export interface Post {
-  id?: number;
-  userId?: number;
-  title: string;
-  body: string;
-}
-
-export interface User {
-  id?: number;
-  name: string;
-  email: string;
-  username?: string;
-}
-
-export interface Todo {
-  userId: number;
-  id: number;
-  title: string;
-  completed: boolean;
-}
+import { Post, User, Todo } from '../models/app.models';
 
 @Injectable({
   providedIn: 'root',

@@ -5,9 +5,10 @@ import {
   OnInit,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ApiService, User } from '../../core/services/api.service';
+import { ApiService } from '../../core/services/api.service';
 import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
 import { MatCardModule } from '@angular/material/card';
+import { User } from '../../core/models/app.models';
 
 @Component({
   selector: 'app-user-card',
