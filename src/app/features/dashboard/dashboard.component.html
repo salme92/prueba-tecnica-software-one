@@ -3,7 +3,8 @@
     <div>
       <h2>Dashboard</h2>
       <p class="dashboard__subtitle">
-        Resumen de posts (API JSONPlaceholder) con paginación, búsqueda y CRUD.
+        Resumen de posts (API JSONPlaceholder) con paginación, búsqueda, CRUD y
+        gráfico simple.
       </p>
     </div>
 
@@ -18,6 +19,21 @@
   <section class="dashboard__user">
     <h3>Usuario destacado</h3>
     <app-user-card [userId]="1"></app-user-card>
+  </section>
+
+  <!-- Gráfico simple: posts por usuario -->
+  <section class="dashboard__chart" *ngIf="postsByUser.length">
+    <h3>Posts por usuario (página actual)</h3>
+    <div class="dashboard__chart-row" *ngFor="let item of postsByUser">
+      <span class="dashboard__chart-label">User {{ item.userId }}</span>
+      <div class="dashboard__chart-bar-wrapper">
+        <div
+          class="dashboard__chart-bar"
+          [style.width.%]="(item.count / maxPostsPerUser) * 100"
+        ></div>
+      </div>
+      <span class="dashboard__chart-value">{{ item.count }}</span>
+    </div>
   </section>
 
   <!-- Filtros -->

@@ -119,3 +119,43 @@
     justify-content: flex-end;
   }
 }
+
+  &__chart {
+    margin-bottom: 16px;
+
+    h3 {
+      margin: 0 0 8px;
+    }
+  }
+
+  &__chart-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+    font-size: 0.85rem;
+  }
+
+  &__chart-label {
+    min-width: 60px;
+  }
+
+  &__chart-bar-wrapper {
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+    height: 10px;
+  }
+
+  &__chart-bar {
+    height: 100%;
+    background-color: #1976d2;
+  }
+
+  &__chart-value {
+    min-width: 24px;
+    text-align: right;
+    font-weight: 500;
+  }
+

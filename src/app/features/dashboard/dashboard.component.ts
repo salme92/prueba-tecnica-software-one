@@ -4,7 +4,7 @@ import {
   Component,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+  import { FormsModule } from '@angular/forms';
 import { ApiService, Post } from '../../core/services/api.service';
 import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
 import { MatButtonModule } from '@angular/material/button';
@@ -12,6 +12,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
 import { UserCardComponent } from '../../standalone/user-card/user-card.component';
+
+interface PostsByUser {
+  userId: number;
+  count: number;
+}
 
 @Component({
   selector: 'app-dashboard',
@@ -43,6 +48,10 @@ export class DashboardComponent {
   editablePost: Post = { title: '', body: '' };
   isEditing = false;
 
+  // Datos para el gráfico
+  postsByUser: PostsByUser[] = [];
+  maxPostsPerUser = 1;
+
   constructor(
     private api: ApiService,
     private cdr: ChangeDetectorRef
@@ -61,6 +70,7 @@ export class DashboardComponent {
         next: (posts) => {
           this.posts = posts;
           this.loading = false;
+          this.computeStats();
           this.cdr.markForCheck();
         },
         error: () => {
@@ -126,6 +136,7 @@ export class DashboardComponent {
           this.posts = this.posts.map((p) =>
             p.id === id ? updated : p
           );
+          this.computeStats();
           this.newPost();
           this.cdr.markForCheck();
         },
@@ -139,6 +150,7 @@ export class DashboardComponent {
       this.api.createPost(this.editablePost).subscribe({
         next: (created) => {
           this.posts = [created, ...this.posts];
+          this.computeStats();
           this.newPost();
           this.cdr.markForCheck();
         },
@@ -158,6 +170,7 @@ export class DashboardComponent {
     this.api.deletePost(id).subscribe({
       next: () => {
         this.posts = this.posts.filter((p) => p.id !== id);
+        this.computeStats();
         this.newPost();
         this.cdr.markForCheck();
       },
@@ -166,5 +179,26 @@ export class DashboardComponent {
         alert('No se pudo eliminar el post');
       },
     });
+  }
+
+  // ===== Estadísticas para el gráfico =====
+ 
+  private computeStats(): void {
+    const map = new Map<number, number>();
+
+    for (const post of this.posts) {
+      const id = post.userId ?? 0;
+      map.set(id, (map.get(id) ?? 0) + 1);
+    }
+
+    this.postsByUser = Array.from(map.entries())
+      .map(([userId, count]) => ({ userId, count }))
+      .sort((a, b) => a.userId - b.userId);
+
+    const max = this.postsByUser.reduce(
+      (acc, item) => (item.count > acc ? item.count : acc),
+      1
+    );
+    this.maxPostsPerUser = max || 1;
   }
 }
