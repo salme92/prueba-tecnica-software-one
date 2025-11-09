@@ -9,6 +9,13 @@ export interface Post {
   body: string;
 }
 
+export interface User {
+  id?: number;
+  name: string;
+  email: string;
+  username?: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -17,7 +24,7 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
 
-  // READ con soporte de paginación básica
+  // ===== POSTS (para Dashboard) =====
   getPosts(page = 1, limit = 10, searchTerm?: string): Observable<Post[]> {
     let params = new HttpParams()
       .set('_page', page)
@@ -30,23 +37,32 @@ export class ApiService {
     return this.http.get<Post[]>(`${this.baseUrl}/posts`, { params });
   }
 
-  // READ one
   getPost(id: number): Observable<Post> {
     return this.http.get<Post>(`${this.baseUrl}/posts/${id}`);
   }
 
-  // CREATE
   createPost(post: Post): Observable<Post> {
     return this.http.post<Post>(`${this.baseUrl}/posts`, post);
   }
 
-  // UPDATE
   updatePost(id: number, post: Post): Observable<Post> {
     return this.http.put<Post>(`${this.baseUrl}/posts/${id}`, post);
   }
 
-  // DELETE
   deletePost(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/posts/${id}`);
+  }
+
+  // ===== USERS (para Perfil / validación asíncrona) =====
+  getUsers(params?: Record<string, string>): Observable<User[]> {
+    let httpParams = new HttpParams();
+
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        httpParams = httpParams.set(key, value);
+      });
+    }
+
+    return this.http.get<User[]>(`${this.baseUrl}/users`, { params: httpParams });
   }
 }
