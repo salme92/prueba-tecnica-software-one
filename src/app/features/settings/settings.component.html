@@ -1,0 +1,59 @@
+<section class="settings">
+  <header class="settings__header">
+    <div>
+      <h2>Configuración</h2>
+      <p class="settings__subtitle">
+        Gestiona tus preferencias de tema, idioma y notificaciones.
+      </p>
+    </div>
+
+    <div class="settings__meta" *ngIf="lastVisit">
+      <span>Última visita a esta página:</span>
+      <strong>{{ lastVisit | date: 'short' }}</strong>
+    </div>
+  </header>
+
+  <mat-card class="settings__card">
+    <form [formGroup]="form" (ngSubmit)="onSave()" class="settings__form">
+      <!-- Tema -->
+      <mat-form-field appearance="outline">
+        <mat-label>Tema</mat-label>
+        <mat-select formControlName="theme">
+          <mat-option *ngFor="let option of themeOptions" [value]="option.value">
+            {{ option.label }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Idioma -->
+      <mat-form-field appearance="outline">
+        <mat-label>Idioma</mat-label>
+        <mat-select formControlName="language">
+          <mat-option
+            *ngFor="let option of languageOptions"
+            [value]="option.value"
+          >
+            {{ option.label }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Notificaciones -->
+      <div class="settings__toggles">
+        <mat-slide-toggle formControlName="emailNotifications">
+          Notificaciones por email
+        </mat-slide-toggle>
+
+        <mat-slide-toggle formControlName="pushNotifications">
+          Notificaciones push
+        </mat-slide-toggle>
+      </div>
+
+      <div class="settings__actions">
+        <button mat-raised-button color="primary" type="submit">
+          Guardar configuración
+        </button>
+      </div>
+    </form>
+  </mat-card>
+</section>

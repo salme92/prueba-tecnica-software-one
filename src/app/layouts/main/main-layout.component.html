@@ -1,4 +1,7 @@
-<mat-sidenav-container class="layout-container">
+<mat-sidenav-container
+  class="layout-container"
+  [ngClass]="(theme$ | async) === 'dark' ? 'theme-dark' : 'theme-light'"
+>
   <mat-sidenav mode="side" opened>
     <mat-toolbar color="primary">Menú</mat-toolbar>
 
@@ -26,6 +29,16 @@
     <mat-toolbar color="primary">
       <span>User Dashboard</span>
       <span class="spacer"></span>
+
+      <!-- Botón para cambiar tema -->
+      <button
+        mat-icon-button
+        [matTooltip]="'Cambiar tema'"
+        (click)="toggleTheme()"
+      >
+        <mat-icon>brightness_6</mat-icon>
+      </button>
+
       <button mat-icon-button>
         <mat-icon>account_circle</mat-icon>
       </button>

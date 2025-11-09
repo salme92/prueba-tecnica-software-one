@@ -1,0 +1,46 @@
+.settings {
+  &__header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  &__subtitle {
+    margin: 4px 0 0;
+    color: #555;
+    font-size: 0.9rem;
+  }
+
+  &__meta {
+    font-size: 0.8rem;
+    color: #666;
+
+    strong {
+      display: block;
+    }
+  }
+
+  &__card {
+    max-width: 600px;
+  }
+
+  &__form {
+    display: grid;
+    gap: 16px;
+  }
+
+  &__toggles {
+    display: grid;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  &__actions {
+    margin-top: 12px;
+    display: flex;
+    justify-content: flex-end;
+  }
+}
