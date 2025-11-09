@@ -1,5 +1,79 @@
 .dashboard {
-  &__description {
-    margin-top: 0.5rem;
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  &__subtitle {
+    margin: 4px 0 0;
+    color: #555;
+    font-size: 0.9rem;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__filters {
+    margin-bottom: 16px;
+  }
+
+  &__search-field {
+    width: 100%;
+    max-width: 320px;
+  }
+
+  &__content {
+    min-height: 120px;
+  }
+
+  &__error {
+    color: #c62828;
+    padding: 12px;
+    border-radius: 4px;
+    background-color: #ffebee;
+  }
+
+  &__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 12px;
+  }
+
+  &__item {
+    border-radius: 6px;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    background-color: #fafafa;
+  }
+
+  &__item-title {
+    margin: 0 0 4px;
+    font-size: 1rem;
+  }
+
+  &__item-body {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #444;
+  }
+
+  &__footer {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  &__page {
+    font-weight: 500;
   }
 }

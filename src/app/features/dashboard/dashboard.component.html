@@ -1,5 +1,60 @@
 <section class="dashboard">
-  <h2>Dashboard</h2>
+  <header class="dashboard__header">
+    <div>
+      <h2>Dashboard</h2>
+      <p class="dashboard__subtitle">
+        Resumen de posts (API JSONPlaceholder) con paginación y búsqueda.
+      </p>
+    </div>
 
-  <p class="dashboard__description">Aquí luego metemos más info</p>
+    <div class="dashboard__actions">
+      <button mat-raised-button color="primary" (click)="reload()">
+        Recargar
+      </button>
+    </div>
+  </header>
+
+  <section class="dashboard__filters">
+    <mat-form-field appearance="outline" class="dashboard__search-field">
+      <mat-label>Buscar</mat-label>
+      <input
+        matInput
+        type="text"
+        placeholder="Buscar por texto..."
+        (keyup.enter)="applySearch($any($event.target).value)"
+      />
+    </mat-form-field>
+  </section>
+
+  <section class="dashboard__content">
+    <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+
+    <div *ngIf="error && !loading" class="dashboard__error">
+      {{ error }}
+    </div>
+
+    <ul *ngIf="!loading && !error" class="dashboard__list">
+      <li
+        class="dashboard__item"
+        *ngFor="let post of posts; trackBy: trackByPostId"
+      >
+        <h3 class="dashboard__item-title">{{ post.title }}</h3>
+        <p class="dashboard__item-body">{{ post.body }}</p>
+      </li>
+    </ul>
+  </section>
+
+  <footer class="dashboard__footer" *ngIf="!loading && !error">
+    <button
+      mat-stroked-button
+      (click)="prevPage()"
+      [disabled]="currentPage === 1"
+    >
+      Anterior
+    </button>
+
+    <span class="dashboard__page">Página {{ currentPage }}</span>
+
+    <button mat-stroked-button (click)="nextPage()">Siguiente</button>
+  </footer>
 </section>
