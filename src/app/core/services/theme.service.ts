@@ -16,10 +16,11 @@ export class ThemeService {
   readonly theme$: Observable<Theme> = this.themeSubject.asObservable();
 
   constructor(private storage: StorageService) {
-    // Cargar el theme desde localStorage o cookie
     const fromLocal =
       this.storage.getLocal<Theme>(THEME_STORAGE_KEY) ?? undefined;
-    const fromCookie = this.storage.getCookie(THEME_COOKIE_KEY) as Theme | null;
+    const fromCookie = this.storage.getCookie(THEME_COOKIE_KEY) as
+      | Theme
+      | null;
 
     const initialTheme: Theme = fromLocal || fromCookie || 'light';
     this.setTheme(initialTheme);

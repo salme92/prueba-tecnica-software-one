@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class StorageService {
-    
+  // ===== LocalStorage =====
   setLocal(key: string, value: unknown): void {
     try {
       localStorage.setItem(key, JSON.stringify(value));
@@ -31,6 +31,7 @@ export class StorageService {
     localStorage.clear();
   }
 
+  // ===== SessionStorage =====
   setSession(key: string, value: unknown): void {
     try {
       sessionStorage.setItem(key, JSON.stringify(value));
@@ -57,11 +58,14 @@ export class StorageService {
     sessionStorage.clear();
   }
 
+  // ===== Cookies =====
   setCookie(name: string, value: string, days = 7): void {
     const date = new Date();
     date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
     const expires = `expires=${date.toUTCString()}`;
-    document.cookie = `${name}=${encodeURIComponent(value)};${expires};path=/`;
+    document.cookie = `${name}=${encodeURIComponent(
+      value
+    )};${expires};path=/`;
   }
 
   getCookie(name: string): string | null {

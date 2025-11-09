@@ -73,7 +73,7 @@ export class SettingsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Cargar settings previos desde localStorage
+    // settings previos desde localStorage
     const saved =
       this.storage.getLocal<SettingsFormValue>(SETTINGS_STORAGE_KEY);
 
@@ -82,7 +82,7 @@ export class SettingsComponent implements OnInit {
       this.themeService.setTheme(saved.theme);
     }
 
-    // Cargar idioma desde cookie si existe
+    // idioma desde cookie
     const lang = this.storage.getCookie(LANGUAGE_COOKIE_KEY) as
       | 'es'
       | 'en'
@@ -91,22 +91,23 @@ export class SettingsComponent implements OnInit {
       this.form.patchValue({ language: lang });
     }
 
-    // Guardar "última visita" en sessionStorage
+    // última visita en sessionStorage
     const now = new Date().toISOString();
     this.storage.setSession('settings_last_visit', now);
-    this.lastVisit = this.storage.getSession<string>('settings_last_visit') ?? null;
+    this.lastVisit =
+      this.storage.getSession<string>('settings_last_visit') ?? null;
   }
 
   onSave(): void {
     const value = this.form.value as SettingsFormValue;
 
-    // Guardar en localStorage
+    // Guardar todo en localStorage
     this.storage.setLocal(SETTINGS_STORAGE_KEY, value);
 
-    // Guardar idioma en cookie
+    // Idioma en cookie
     this.storage.setCookie(LANGUAGE_COOKIE_KEY, value.language, 365);
 
-    // Actualizar tema global
+    // Actualizar tema
     this.themeService.setTheme(value.theme);
 
     alert('Configuración guardada (simulado)');
