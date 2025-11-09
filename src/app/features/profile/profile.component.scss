@@ -1,27 +1,48 @@
 .profile {
-  &__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    margin-bottom: 24px;
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+
+  mat-card {
+    width: 100%;
+    max-width: 500px;
+    padding: 16px 24px;
   }
 
-  &__subtitle {
-    margin: 4px 0 0;
-    color: #555;
-    font-size: 0.9rem;
+  h2 {
+    margin-top: 0;
+    margin-bottom: 16px;
   }
 
-  &__form {
-    display: grid;
-    gap: 16px;
-    max-width: 480px;
+  &__field {
+    width: 100%;
+    display: block;
+    margin-bottom: 12px;
   }
 
   &__actions {
-    margin-top: 8px;
     display: flex;
     justify-content: flex-end;
+    margin-top: 12px;
+  }
+
+  &__saved {
+    margin-top: 16px;
+    color: #2e7d32;
+    font-weight: 500;
+  }
+
+  .spinner-icon {
+    color: #1976d2;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 }

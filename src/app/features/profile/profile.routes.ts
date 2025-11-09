@@ -7,4 +7,3 @@ export const PROFILE_ROUTES: Routes = [
     component: ProfileComponent,
   },
 ];
- 

@@ -34,11 +34,11 @@ export class UserCardComponent implements OnInit {
 
     this.loading = true;
     this.api.getUser(this.userId).subscribe({
-      next: (user: User | null) => {
+      next: (user) => {
         this.user = user;
         this.loading = false;
       },
-      error: (err: any) => {
+      error: (err) => {
         console.error('Error cargando usuario', err);
         this.error = 'No se pudo cargar la información del usuario.';
         this.loading = false;

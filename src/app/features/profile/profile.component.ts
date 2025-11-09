@@ -1,56 +1,28 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
+  OnInit,
   ViewChild,
 } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import {
-  AbstractControl,
-  AsyncValidatorFn,
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
-  ValidationErrors,
   Validators,
+  AbstractControl,
+  ValidationErrors,
+  AsyncValidatorFn,
 } from '@angular/forms';
-import { CommonModule } from '@angular/common';
 import { ApiService } from '../../core/services/api.service';
-import { debounceTime, map, of, switchMap } from 'rxjs';
+import { debounceTime, map, switchMap, catchError, of } from 'rxjs';
+import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-
-/** Validador síncrono: algunos nombres no permitidos */
-function forbiddenNameValidator(
-  control: AbstractControl
-): ValidationErrors | null {
-  const forbidden = ['admin', 'root', 'superuser'];
-  const value = (control.value ?? '').toString().toLowerCase();
-
-  return forbidden.includes(value) ? { forbiddenName: true } : null;
-}
-
-/** Validador asíncrono: simulamos comprobar si el username ya existe */
-function usernameExistsValidator(api: ApiService): AsyncValidatorFn {
-  return (control: AbstractControl) => {
-    const value = control.value?.toString().trim();
-
-    if (!value) {
-      return of(null);
-    }
-
-    return of(value).pipe(
-      debounceTime(400),
-      switchMap((username) =>
-        api.getUsers({ username }).pipe(
-          map((users) =>
-            users && users.length > 0 ? { usernameTaken: true } : null
-          )
-        )
-      )
-    );
-  };
-}
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-profile',
@@ -58,75 +30,99 @@ function usernameExistsValidator(api: ApiService): AsyncValidatorFn {
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule,
+    MatCardModule,
+    MatIconModule,
   ],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProfileComponent {
-  form: FormGroup;
+export class ProfileComponent implements OnInit {
+  form!: FormGroup;
+  saving = false;
+  saved = false;
 
-  // Ejemplo de ViewChild: enfocamos el campo nombre desde un botón
   @ViewChild('nameInput') nameInput!: ElementRef<HTMLInputElement>;
 
-  constructor(private fb: FormBuilder, private api: ApiService) {
+  constructor(
+    private fb: FormBuilder,
+    private api: ApiService,
+    private cdr: ChangeDetectorRef
+  ) {}
+
+  ngOnInit(): void {
     this.form = this.fb.group({
-      name: [
+      name: ['', [Validators.required, Validators.minLength(3)]],
+      email: [
         '',
-        [Validators.required, Validators.minLength(3), forbiddenNameValidator],
+        [Validators.required, Validators.email],
+        [this.emailExistsValidator()],
       ],
-      email: ['', [Validators.required, Validators.email]],
-      username: [
-        '',
-        [Validators.required, Validators.minLength(3)],
-        [usernameExistsValidator(this.api)],
-      ],
+      username: ['', [Validators.required, this.noSpacesValidator]],
     });
   }
 
-  focusName(): void {
-    if (this.nameInput?.nativeElement) {
-      this.nameInput.nativeElement.focus();
-    }
+  ngAfterViewInit(): void {
+    // Ejemplo de uso de ViewChild
+    this.nameInput.nativeElement.focus();
   }
 
-  getErrorMessage(controlName: string): string | null {
-    const ctrl = this.form.get(controlName);
-    if (!ctrl || !ctrl.touched && !ctrl.dirty) {
-      return null;
+  /** Custom validator - no permitir espacios en username */
+  noSpacesValidator(control: AbstractControl): ValidationErrors | null {
+    const value = control.value as string;
+    if (value && value.includes(' ')) {
+      return { spacesNotAllowed: true };
     }
-
-    if (ctrl.hasError('required')) {
-      return 'Este campo es obligatorio';
-    }
-    if (ctrl.hasError('minlength')) {
-      const requiredLength = ctrl.getError('minlength')?.requiredLength;
-      return `Debe tener al menos ${requiredLength} caracteres`;
-    }
-    if (ctrl.hasError('email')) {
-      return 'Debe ser un email válido';
-    }
-    if (ctrl.hasError('forbiddenName')) {
-      return 'Este nombre no está permitido';
-    }
-    if (ctrl.hasError('usernameTaken')) {
-      return 'Este nombre de usuario ya está en uso';
-    }
-
     return null;
   }
 
-  onSubmit(): void {
+  /** Async validator para comprobar si el email ya existe */
+  emailExistsValidator(): AsyncValidatorFn {
+    return (control: AbstractControl) => {
+      return of(control.value).pipe(
+        debounceTime(500),
+        switchMap((email) => {
+          if (!email) return of(null);
+          return this.api.getUsers({ email }).pipe(
+            map((users) => (users.length > 0 ? { emailTaken: true } : null)),
+            catchError(() => of(null))
+          );
+        })
+      );
+    };
+  }
+
+  submit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
 
-    // Aquí podrías llamar a ApiService.createUser/updateUser
-    console.log('Perfil guardado:', this.form.value);
-    alert('Perfil guardado correctamente (simulado)');
+    this.saving = true;
+    this.saved = false;
+    this.cdr.markForCheck();
+
+    setTimeout(() => {
+      this.saving = false;
+      this.saved = true;
+      this.cdr.markForCheck();
+    }, 1200);
+  }
+
+  getErrorMessage(controlName: string): string {
+    const control = this.form.get(controlName);
+    if (!control || !control.errors) return '';
+
+    if (control.hasError('required')) return 'Campo obligatorio';
+    if (control.hasError('minlength'))
+      return 'Debe tener al menos 3 caracteres';
+    if (control.hasError('email')) return 'Formato de email no válido';
+    if (control.hasError('emailTaken')) return 'El email ya existe';
+    if (control.hasError('spacesNotAllowed'))
+      return 'No se permiten espacios';
+    return 'Error desconocido';
   }
 }
