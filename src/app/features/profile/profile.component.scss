@@ -1,0 +1,27 @@
+.profile {
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  &__subtitle {
+    margin: 4px 0 0;
+    color: #555;
+    font-size: 0.9rem;
+  }
+
+  &__form {
+    display: grid;
+    gap: 16px;
+    max-width: 480px;
+  }
+
+  &__actions {
+    margin-top: 8px;
+    display: flex;
+    justify-content: flex-end;
+  }
+}

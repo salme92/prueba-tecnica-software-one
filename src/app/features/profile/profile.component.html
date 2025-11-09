@@ -1,0 +1,74 @@
+<section class="profile">
+  <header class="profile__header">
+    <div>
+      <h2>Perfil de usuario</h2>
+      <p class="profile__subtitle">
+        Edita tus datos personales. Incluye validaciones síncronas y
+        asíncronas.
+      </p>
+    </div>
+
+    <button mat-stroked-button type="button" (click)="focusName()">
+      Enfocar campo nombre
+    </button>
+  </header>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="profile__form">
+    <!-- Nombre -->
+    <mat-form-field appearance="outline">
+      <mat-label>Nombre</mat-label>
+      <input
+        #nameInput
+        matInput
+        formControlName="name"
+        autocomplete="off"
+        placeholder="Introduce tu nombre"
+      />
+      <mat-error *ngIf="getErrorMessage('name') as msg">
+        {{ msg }}
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Email -->
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input
+        matInput
+        formControlName="email"
+        autocomplete="off"
+        placeholder="tu@correo.com"
+      />
+      <mat-error *ngIf="getErrorMessage('email') as msg">
+        {{ msg }}
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Username -->
+    <mat-form-field appearance="outline">
+      <mat-label>Nombre de usuario</mat-label>
+      <input
+        matInput
+        formControlName="username"
+        autocomplete="off"
+        placeholder="Elige un username"
+      />
+      <mat-error *ngIf="getErrorMessage('username') as msg">
+        {{ msg }}
+      </mat-error>
+      <mat-hint *ngIf="form.get('username')?.pending">
+        Comprobando disponibilidad...
+      </mat-hint>
+    </mat-form-field>
+
+    <div class="profile__actions">
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="form.invalid || form.pending"
+      >
+        Guardar
+      </button>
+    </div>
+  </form>
+</section>

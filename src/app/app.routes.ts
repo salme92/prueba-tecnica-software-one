@@ -1,4 +1,3 @@
-// src/app/app.routes.ts
 import { Routes } from '@angular/router';
 import { MainLayoutComponent } from './layouts/main/main-layout.component'
 
@@ -17,6 +16,13 @@ export const appRoutes: Routes = [
         loadChildren: () =>
           import('./features/dashboard/dashboard.routes').then(
             (m) => m.DASHBOARD_ROUTES
+          ),
+      },
+      {
+        path: 'profile',
+        loadChildren: () =>
+          import('./features/profile/profile.routes').then(
+            (m) => m.PROFILE_ROUTES
           ),
       }
     ],
