@@ -1,59 +1,85 @@
-<section class="settings">
+<section class="settings" [formGroup]="form">
   <header class="settings__header">
     <div>
-      <h2>Configuración</h2>
+      <h1 class="settings__title">Configuración</h1>
       <p class="settings__subtitle">
-        Gestiona tus preferencias de tema, idioma y notificaciones.
+        Personaliza tus preferencias de tema, idioma y notificaciones.
       </p>
-    </div>
-
-    <div class="settings__meta" *ngIf="lastVisit">
-      <span>Última visita a esta página:</span>
-      <strong>{{ lastVisit | date: 'short' }}</strong>
     </div>
   </header>
 
-  <mat-card class="settings__card">
-    <form [formGroup]="form" (ngSubmit)="onSave()" class="settings__form">
-      <!-- Tema -->
-      <mat-form-field appearance="outline">
-        <mat-label>Tema</mat-label>
-        <mat-select formControlName="theme">
-          <mat-option *ngFor="let option of themeOptions" [value]="option.value">
-            {{ option.label }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+  <section class="settings__grid">
+    <!-- Preferencias generales -->
+    <mat-card class="settings__card">
+      <h2 class="settings__card-title">Preferencias generales</h2>
+      <p class="settings__card-subtitle">
+        Ajusta el comportamiento visual de la aplicación.
+      </p>
 
-      <!-- Idioma -->
-      <mat-form-field appearance="outline">
-        <mat-label>Idioma</mat-label>
-        <mat-select formControlName="language">
-          <mat-option
-            *ngFor="let option of languageOptions"
-            [value]="option.value"
-          >
-            {{ option.label }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <!-- Notificaciones -->
-      <div class="settings__toggles">
-        <mat-slide-toggle formControlName="emailNotifications">
-          Notificaciones por email
-        </mat-slide-toggle>
-
-        <mat-slide-toggle formControlName="pushNotifications">
-          Notificaciones push
-        </mat-slide-toggle>
+      <div class="settings__field">
+        <span class="settings__label">Tema</span>
+        <mat-button-toggle-group
+          formControlName="theme"
+          class="settings__toggle-group"
+        >
+          <mat-button-toggle value="light">
+            <mat-icon>light_mode</mat-icon>
+            Claro
+          </mat-button-toggle>
+          <mat-button-toggle value="dark">
+            <mat-icon>dark_mode</mat-icon>
+            Oscuro
+          </mat-button-toggle>
+        </mat-button-toggle-group>
       </div>
 
-      <div class="settings__actions">
-        <button mat-raised-button color="primary" type="submit">
-          Guardar configuración
-        </button>
+      <div class="settings__field">
+        <span class="settings__label">Idioma</span>
+        <mat-form-field appearance="outline" class="settings__field-control">
+          <mat-label>Idioma</mat-label>
+          <mat-select formControlName="language">
+            <mat-option value="es">Español</mat-option>
+            <mat-option value="en">Inglés</mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
-    </form>
-  </mat-card>
+    </mat-card>
+
+    <!-- Notificaciones -->
+    <mat-card class="settings__card">
+      <h2 class="settings__card-title">Notificaciones</h2>
+      <p class="settings__card-subtitle">
+        Gestiona cómo y cuándo quieres recibir avisos.
+      </p>
+
+      <mat-slide-toggle formControlName="emailNotifications">
+        Notificaciones por email
+      </mat-slide-toggle>
+
+      <mat-slide-toggle formControlName="pushNotifications">
+        Notificaciones push
+      </mat-slide-toggle>
+
+      <mat-slide-toggle formControlName="newsletter">
+        Suscribirse al boletín mensual
+      </mat-slide-toggle>
+    </mat-card>
+  </section>
+
+  <footer class="settings__footer">
+    <button mat-stroked-button color="primary" (click)="reset()">
+      <mat-icon>restart_alt</mat-icon>
+      Restablecer
+    </button>
+
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="save()"
+      [disabled]="form.invalid"
+    >
+      <mat-icon>save</mat-icon>
+      Guardar configuración
+    </button>
+  </footer>
 </section>

@@ -1,17 +1,24 @@
-<mat-card class="user-card">
-  <ng-container *ngIf="loading">
-    <app-loading-spinner></app-loading-spinner>
-  </ng-container>
+<mat-card class="user-card" *ngIf="user; else loadingOrError">
+  <div class="user-card__avatar">
+    <span>{{ initials }}</span>
+  </div>
 
-  <ng-container *ngIf="error && !loading">
-    <p class="user-card__error">{{ error }}</p>
-  </ng-container>
-
-  <ng-container *ngIf="user && !loading && !error">
+  <div class="user-card__content">
     <h3 class="user-card__name">{{ user.name }}</h3>
-    <p class="user-card__email">{{ user.email }}</p>
-    <p class="user-card__username" *ngIf="user.username">
-      @{{ user.username }}
+    <p class="user-card__username">@{{ user.username }}</p>
+    <p class="user-card__email">
+      <mat-icon>mail</mat-icon>
+      <span>{{ user.email }}</span>
     </p>
-  </ng-container>
+    <p class="user-card__meta" *ngIf="user.phone">
+      <mat-icon>phone</mat-icon>
+      <span>{{ user.phone }}</span>
+    </p>
+  </div>
 </mat-card>
+
+<ng-template #loadingOrError>
+  <div class="user-card user-card--placeholder">
+    <app-loading-spinner></app-loading-spinner>
+  </div>
+</ng-template>

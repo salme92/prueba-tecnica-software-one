@@ -1,46 +1,107 @@
 .settings {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  color: var(--app-text);
+
   &__header {
     display: flex;
-    align-items: flex-end;
     justify-content: space-between;
-    gap: 16px;
-    margin-bottom: 24px;
-    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--app-text);
   }
 
   &__subtitle {
-    margin: 4px 0 0;
-    color: #555;
+    margin: 0.25rem 0 0;
     font-size: 0.9rem;
+    color: var(--app-text-soft);
   }
 
-  &__meta {
-    font-size: 0.8rem;
-    color: #666;
+  &__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 1.25rem;
 
-    strong {
-      display: block;
+    @media (max-width: 900px) {
+      grid-template-columns: minmax(0, 1fr);
     }
   }
 
   &__card {
-    max-width: 600px;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px var(--app-border-subtle);
+    padding: 1.2rem 1.4rem;
+    background: var(--app-surface);
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
   }
 
-  &__form {
-    display: grid;
-    gap: 16px;
+  &__card-title {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--app-text);
   }
 
-  &__toggles {
-    display: grid;
-    gap: 8px;
-    margin-top: 8px;
+  &__card-subtitle {
+    margin: 0.15rem 0 0.4rem;
+    font-size: 0.85rem;
+    color: var(--app-text-soft);
   }
 
-  &__actions {
-    margin-top: 12px;
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  &__label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--app-text-soft);
+  }
+
+  &__field-control {
+    width: 100%;
+  }
+
+  &__toggle-group {
+    display: inline-flex;
+
+    .mat-button-toggle {
+      text-transform: none;
+      gap: 0.35rem;
+
+      mat-icon {
+        font-size: 18px;
+      }
+    }
+  }
+
+  &__footer {
     display: flex;
     justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+
+    button mat-icon {
+      margin-right: 0.35rem;
+    }
+
+    @media (max-width: 640px) {
+      flex-direction: column;
+      align-items: stretch;
+
+      button {
+        width: 100%;
+      }
+    }
   }
 }

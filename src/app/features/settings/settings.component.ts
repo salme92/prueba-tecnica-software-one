@@ -1,115 +1,76 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
+  Validators,
 } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { StorageService } from '../../core/services/storage.service';
-import { Theme, ThemeService } from '../../core/services/theme.service';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
-import { MatInputModule } from '@angular/material/input';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatButtonModule } from '@angular/material/button';
+
 import { MatCardModule } from '@angular/material/card';
-
-interface SettingsFormValue {
-  theme: Theme;
-  language: 'es' | 'en';
-  emailNotifications: boolean;
-  pushNotifications: boolean;
-}
-
-const SETTINGS_STORAGE_KEY = 'user_settings';
-const LANGUAGE_COOKIE_KEY = 'app_language';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatInputModule,
-    MatSlideToggleModule,
-    MatButtonModule,
-    MatCardModule,
-  ],
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatCardModule,
+    MatButtonToggleModule,
+    MatSlideToggleModule,
+    MatSelectModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
+    MatButtonModule,
+  ],
 })
 export class SettingsComponent implements OnInit {
-  form: FormGroup;
-  lastVisit: string | null = null;
+  form!: FormGroup;
 
-  themeOptions: { value: Theme; label: string }[] = [
-    { value: 'light', label: 'Claro' },
-    { value: 'dark', label: 'Oscuro' },
-  ];
+  private readonly defaultValues = {
+    theme: 'light',
+    language: 'es',
+    emailNotifications: true,
+    pushNotifications: true,
+    newsletter: false,
+  };
 
-  languageOptions = [
-    { value: 'es', label: 'Español' },
-    { value: 'en', label: 'Inglés' },
-  ];
+  constructor(private fb: FormBuilder) {}
 
-  constructor(
-    private fb: FormBuilder,
-    private storage: StorageService,
-    private themeService: ThemeService
-  ) {
-    this.form = this.fb.group<SettingsFormValue>({
-      theme: 'light',
-      language: 'es',
-      emailNotifications: true,
-      pushNotifications: false,
+  ngOnInit(): void {
+    this.form = this.fb.group({
+      theme: [this.defaultValues.theme, Validators.required],
+      language: [this.defaultValues.language, Validators.required],
+      emailNotifications: [this.defaultValues.emailNotifications],
+      pushNotifications: [this.defaultValues.pushNotifications],
+      newsletter: [this.defaultValues.newsletter],
     });
   }
 
-  ngOnInit(): void {
-    // settings previos desde localStorage
-    const saved =
-      this.storage.getLocal<SettingsFormValue>(SETTINGS_STORAGE_KEY);
-
-    if (saved) {
-      this.form.patchValue(saved);
-      this.themeService.setTheme(saved.theme);
-    }
-
-    // idioma desde cookie
-    const lang = this.storage.getCookie(LANGUAGE_COOKIE_KEY) as
-      | 'es'
-      | 'en'
-      | null;
-    if (lang) {
-      this.form.patchValue({ language: lang });
-    }
-
-    // última visita en sessionStorage
-    const now = new Date().toISOString();
-    this.storage.setSession('settings_last_visit', now);
-    this.lastVisit =
-      this.storage.getSession<string>('settings_last_visit') ?? null;
+  reset(): void {
+    this.form.reset(this.defaultValues);
   }
 
-  onSave(): void {
-    const value = this.form.value as SettingsFormValue;
+  save(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
 
-    // Guardar todo en localStorage
-    this.storage.setLocal(SETTINGS_STORAGE_KEY, value);
-
-    // Idioma en cookie
-    this.storage.setCookie(LANGUAGE_COOKIE_KEY, value.language, 365);
-
-    // Actualizar tema
-    this.themeService.setTheme(value.theme);
-
-    alert('Configuración guardada (simulado)');
+    const value = this.form.value;
+    // Aquí podrías usar ThemeService / StorageService si quieres persistirlo
+    // Por ahora dejamos un log para la prueba técnica:
+    console.log('Configuración guardada', value);
   }
 }

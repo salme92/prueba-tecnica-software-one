@@ -1,140 +1,205 @@
 <section class="dashboard">
   <header class="dashboard__header">
     <div>
-      <h2>Dashboard</h2>
+      <h1 class="dashboard__title">Dashboard</h1>
       <p class="dashboard__subtitle">
-        Resumen de posts (API JSONPlaceholder) con paginación, búsqueda, CRUD,
-        gráfico simple y notificación PWA simulada.
+        Resumen de actividad del usuario, posts y estadísticas desde JSONPlaceholder.
       </p>
     </div>
 
-    <div class="dashboard__actions">
-      <button mat-stroked-button type="button" (click)="simulatePushNotification()">
-        Probar notificación push
+    <div class="dashboard__header-actions">
+      <button mat-stroked-button (click)="simulatePushNotification()">
+        <mat-icon>notifications</mat-icon>
+        <span>Notificación simulada</span>
       </button>
 
       <button mat-raised-button color="primary" (click)="reload()">
-        Recargar
+        <mat-icon>refresh</mat-icon>
+        <span>Recargar datos</span>
       </button>
     </div>
   </header>
 
-  <!-- Usuario destacado -->
-  <section class="dashboard__user">
-    <h3>Usuario destacado</h3>
-    <app-user-card [userId]="1"></app-user-card>
-  </section>
-
-  <!-- Gráfico simple: posts por usuario -->
-  <section class="dashboard__chart" *ngIf="postsByUser.length">
-    <h3>Posts por usuario (página actual)</h3>
-    <div class="dashboard__chart-row" *ngFor="let item of postsByUser">
-      <span class="dashboard__chart-label">User {{ item.userId }}</span>
-      <div class="dashboard__chart-bar-wrapper">
-        <div
-          class="dashboard__chart-bar"
-          [style.width.%]="(item.count / maxPostsPerUser) * 100"
-        ></div>
+  <!-- Métricas superiores -->
+  <section class="dashboard__grid">
+    <mat-card class="dashboard__card dashboard__card--metric">
+      <div class="dashboard__card-header">
+        <span class="dashboard__card-label">Posts en la página</span>
+        <mat-icon>article</mat-icon>
       </div>
-      <span class="dashboard__chart-value">{{ item.count }}</span>
-    </div>
+      <div class="dashboard__card-value">{{ posts.length }}</div>
+      <p class="dashboard__card-helper">
+        Mostrando {{ pageSize }} elementos por página.
+      </p>
+    </mat-card>
+
+    <mat-card class="dashboard__card dashboard__card--metric">
+      <div class="dashboard__card-header">
+        <span class="dashboard__card-label">Usuarios únicos</span>
+        <mat-icon>group</mat-icon>
+      </div>
+      <div class="dashboard__card-value">{{ postsByUser.length }}</div>
+      <p class="dashboard__card-helper">
+        Usuarios con posts en esta página.
+      </p>
+    </mat-card>
+
+    <mat-card class="dashboard__card dashboard__card--metric">
+      <div class="dashboard__card-header">
+        <span class="dashboard__card-label">Página actual</span>
+        <mat-icon>layers</mat-icon>
+      </div>
+      <div class="dashboard__card-value">{{ currentPage }}</div>
+      <p class="dashboard__card-helper">
+        Puedes navegar entre páginas.
+      </p>
+    </mat-card>
   </section>
 
-  <!-- Filtros -->
-  <section class="dashboard__filters">
-    <mat-form-field appearance="outline" class="dashboard__search-field">
-      <mat-label>Buscar</mat-label>
-      <input
-        matInput
-        type="text"
-        placeholder="Buscar por texto..."
-        (keyup.enter)="applySearch($any($event.target).value)"
-      />
-    </mat-form-field>
-  </section>
+  <!-- Layout principal: lista de posts + editor -->
+  <section class="dashboard__layout">
+    <!-- Panel de posts -->
+    <div class="dashboard__panel">
+      <mat-card class="dashboard__card dashboard__card--posts">
+        <div class="dashboard__card-header dashboard__card-header--between">
+          <span class="dashboard__card-label">Posts</span>
+          <span class="dashboard__badge">API: JSONPlaceholder</span>
+        </div>
 
-  <!-- Listado de posts -->
-  <section class="dashboard__content">
-    <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+        <div class="dashboard__filters">
+          <mat-form-field appearance="outline" class="dashboard__search-field">
+            <mat-label>Buscar</mat-label>
+            <input
+              matInput
+              type="text"
+              placeholder="Buscar por texto..."
+              (keyup.enter)="applySearch($any($event.target).value)"
+            />
+            <button mat-icon-button matSuffix (click)="applySearch(searchTerm)">
+              <mat-icon>search</mat-icon>
+            </button>
+          </mat-form-field>
+        </div>
 
-    <div *ngIf="error && !loading" class="dashboard__error">
-      {{ error }}
-    </div>
+        <app-loading-spinner *ngIf="loading"></app-loading-spinner>
 
-    <ul *ngIf="!loading && !error" class="dashboard__list">
-      <app-post-item
-        *ngFor="let post of posts; trackBy: trackByPostId"
-        [post]="post"
-        (selected)="selectPost($event)"
-      ></app-post-item>
-    </ul>
-  </section>
+        <div *ngIf="error && !loading" class="dashboard__error">
+          <mat-icon>error_outline</mat-icon>
+          <span>{{ error }}</span>
+        </div>
 
-  <!-- Paginación -->
-  <footer class="dashboard__footer" *ngIf="!loading && !error">
-    <button
-      mat-stroked-button
-      (click)="prevPage()"
-      [disabled]="currentPage === 1"
-    >
-      Anterior
-    </button>
+        <!-- OJO: ya no es <ul>, ahora es <div> para que no haya bullets -->
+        <div *ngIf="!loading && !error" class="dashboard__list">
+          <app-post-item
+            *ngFor="let post of posts; trackBy: trackByPostId"
+            [post]="post"
+            (selected)="selectPost($event)"
+          ></app-post-item>
+        </div>
 
-    <span class="dashboard__page">Página {{ currentPage }}</span>
-
-    <button mat-stroked-button (click)="nextPage()">Siguiente</button>
-  </footer>
-
-  <!-- Editor CRUD -->
-  <section class="dashboard__editor">
-    <mat-card>
-      <header class="dashboard__editor-header">
-        <h3>
-          {{ isEditing ? 'Editar post' : 'Crear nuevo post' }}
-        </h3>
-        <button mat-button type="button" (click)="newPost()">
-          Nuevo
-        </button>
-      </header>
-
-      <form (ngSubmit)="savePost()" class="dashboard__editor-form">
-        <mat-form-field appearance="outline">
-          <mat-label>Título</mat-label>
-          <input
-            matInput
-            name="title"
-            [(ngModel)]="editablePost.title"
-            placeholder="Título del post"
-          />
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>Contenido</mat-label>
-          <textarea
-            matInput
-            name="body"
-            rows="4"
-            [(ngModel)]="editablePost.body"
-            placeholder="Contenido del post"
-          ></textarea>
-        </mat-form-field>
-
-        <div class="dashboard__editor-actions">
-          <button mat-raised-button color="primary" type="submit">
-            Guardar
-          </button>
-
+        <footer class="dashboard__footer" *ngIf="!loading && !error">
           <button
             mat-stroked-button
-            color="warn"
-            type="button"
-            (click)="deletePost()"
-            [disabled]="!isEditing || !editablePost.id"
+            (click)="prevPage()"
+            [disabled]="currentPage === 1"
           >
-            Eliminar
+            <mat-icon>chevron_left</mat-icon>
+            Anterior
           </button>
+
+          <span class="dashboard__page">Página {{ currentPage }}</span>
+
+          <button mat-stroked-button (click)="nextPage()">
+            Siguiente
+            <mat-icon>chevron_right</mat-icon>
+          </button>
+        </footer>
+      </mat-card>
+    </div>
+
+    <!-- Panel de nuevo/editar post -->
+    <div class="dashboard__panel dashboard__panel--editor">
+      <mat-card class="dashboard__card dashboard__card--editor">
+        <header class="dashboard__editor-header">
+          <div>
+            <h2 class="dashboard__editor-title">
+              {{ isEditing ? 'Editar post' : 'Nuevo post' }}
+            </h2>
+            <p class="dashboard__editor-subtitle">
+              {{ isEditing ? 'Estás modificando un post existente.' : 'Crea un nuevo post de ejemplo.' }}
+            </p>
+          </div>
+
+          <button mat-button type="button" (click)="newPost()">
+            <mat-icon>add</mat-icon>
+            Nuevo
+          </button>
+        </header>
+
+        <form (ngSubmit)="savePost()" class="dashboard__editor-form">
+          <mat-form-field appearance="outline">
+            <mat-label>Título</mat-label>
+            <input
+              matInput
+              name="title"
+              [(ngModel)]="editablePost.title"
+              placeholder="Título del post"
+            />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Contenido</mat-label>
+            <textarea
+              matInput
+              name="body"
+              rows="5"
+              [(ngModel)]="editablePost.body"
+              placeholder="Contenido del post"
+            ></textarea>
+          </mat-form-field>
+
+          <div class="dashboard__editor-actions">
+            <button mat-raised-button color="primary" type="submit">
+              <mat-icon>save</mat-icon>
+              Guardar
+            </button>
+
+            <button
+              mat-stroked-button
+              color="warn"
+              type="button"
+              (click)="deletePost()"
+              [disabled]="!isEditing || !editablePost.id"
+            >
+              <mat-icon>delete</mat-icon>
+              Eliminar
+            </button>
+          </div>
+        </form>
+      </mat-card>
+    </div>
+  </section>
+
+  <!-- Gráfica al final de la página -->
+  <section class="dashboard__chart-section" *ngIf="postsByUser.length">
+    <mat-card class="dashboard__card dashboard__card--chart">
+      <div class="dashboard__card-header">
+        <span class="dashboard__card-label">Posts por usuario (página actual)</span>
+        <mat-icon>bar_chart</mat-icon>
+      </div>
+
+      <div class="dashboard__chart">
+        <div class="dashboard__chart-row" *ngFor="let item of postsByUser">
+          <span class="dashboard__chart-label">User {{ item.userId }}</span>
+          <div class="dashboard__chart-bar-wrapper">
+            <div
+              class="dashboard__chart-bar"
+              [style.width.%]="(item.count / maxPostsPerUser) * 100"
+            ></div>
+          </div>
+          <span class="dashboard__chart-value">{{ item.count }}</span>
         </div>
-      </form>
+      </div>
     </mat-card>
   </section>
 </section>

@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
@@ -8,21 +9,24 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
+  AbstractControl,
+  AsyncValidatorFn,
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
-  Validators,
-  AbstractControl,
   ValidationErrors,
-  AsyncValidatorFn,
+  Validators,
 } from '@angular/forms';
+import { debounceTime, map, of, switchMap, catchError } from 'rxjs';
+
 import { ApiService } from '../../core/services/api.service';
-import { debounceTime, map, switchMap, catchError, of } from 'rxjs';
+
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-profile',
@@ -35,16 +39,18 @@ import { MatIconModule } from '@angular/material/icon';
     MatInputModule,
     MatCardModule,
     MatIconModule,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, AfterViewInit {
   form!: FormGroup;
   saving = false;
   saved = false;
 
+  // el template usa #nameInput para el ViewChild
   @ViewChild('nameInput') nameInput!: ElementRef<HTMLInputElement>;
 
   constructor(
@@ -62,12 +68,23 @@ export class ProfileComponent implements OnInit {
         [this.emailExistsValidator()],
       ],
       username: ['', [Validators.required, this.noSpacesValidator]],
+      // campos extra que aparecen en el nuevo HTML (opcionales)
+      phone: [''],
+      website: [''],
+      bio: [''],
     });
   }
 
   ngAfterViewInit(): void {
     // Ejemplo de uso de ViewChild
-    this.nameInput.nativeElement.focus();
+    if (this.nameInput?.nativeElement) {
+      this.nameInput.nativeElement.focus();
+    }
+  }
+
+  /** Getter para usar `loading` en el template (mapea a saving) */
+  get loading(): boolean {
+    return this.saving;
   }
 
   /** Custom validator - no permitir espacios en username */
@@ -105,6 +122,7 @@ export class ProfileComponent implements OnInit {
     this.saved = false;
     this.cdr.markForCheck();
 
+    // Simulación de guardado
     setTimeout(() => {
       this.saving = false;
       this.saved = true;

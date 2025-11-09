@@ -1,28 +1,23 @@
+// src/test.ts
 import 'zone.js/testing';
-
 import { getTestBed } from '@angular/core/testing';
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from '@angular/platform-browser-dynamic/testing';
 
-declare const require: {
-  context(
-    path: string,
-    deep?: boolean,
-    filter?: RegExp
-  ): {
-    keys(): string[];
-    <T>(id: string): T;
-  };
-};
-
-// Inicializar entorno de testing
+// Inicializamos el entorno de testing de Angular
 getTestBed().initTestEnvironment(
   BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting()
+  platformBrowserDynamicTesting(),
+  {
+    teardown: { destroyAfterEach: false },
+  }
 );
 
-// Cargar automáticamente todos los *.spec.ts
-const context = require.context('./', true, /\.spec\.ts$/);
-context.keys().forEach(context);
+// 🔥 En vez de require.context, importamos los specs explícitamente.
+// Ajusta las rutas si tu estructura difiere.
+
+import './app/features/dashboard/dashboard.component.spec';
+import './app/features/profile/profile.component.spec';
+import './app/core/services/api.services.spec';

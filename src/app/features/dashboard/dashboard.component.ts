@@ -1,39 +1,45 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-} from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { NgIf, NgFor, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ApiService } from '../../core/services/api.service';
-import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
+
+import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatCardModule } from '@angular/material/card';
+
 import { UserCardComponent } from '../../standalone/user-card/user-card.component';
 import { PostItemComponent } from '../../shared/components/post-item/post-item.component';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
 import { Post, PostsByUser } from '../../core/models/app.models';
+import { ApiService } from '../../core/services/api.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
+// importa también tu ApiService, modelos, etc.
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    LoadingSpinnerComponent,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatCardModule,
-    UserCardComponent,
-    PostItemComponent,
-    MatSnackBarModule,
-  ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    // Angular
+    NgIf,
+    NgFor,
+    NgClass,
+    FormsModule,
+    // Material
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    // Componentes propios
+    UserCardComponent,
+    LoadingSpinnerComponent,
+    PostItemComponent,
+  ],
 })
 export class DashboardComponent {
   posts: Post[] = [];

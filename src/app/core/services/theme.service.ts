@@ -1,39 +1,34 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { StorageService } from './storage.service';
+import { BehaviorSubject } from 'rxjs';
 
 export type Theme = 'light' | 'dark';
 
-const THEME_STORAGE_KEY = 'app_theme';
-const THEME_COOKIE_KEY = 'app_theme';
-
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class ThemeService {
-  private readonly themeSubject = new BehaviorSubject<Theme>('light');
+  _theme$ = new BehaviorSubject<Theme>('light');
+  readonly theme$ = this._theme$.asObservable();
 
-  readonly theme$: Observable<Theme> = this.themeSubject.asObservable();
-
-  constructor(private storage: StorageService) {
-    const fromLocal =
-      this.storage.getLocal<Theme>(THEME_STORAGE_KEY) ?? undefined;
-    const fromCookie = this.storage.getCookie(THEME_COOKIE_KEY) as
-      | Theme
-      | null;
-
-    const initialTheme: Theme = fromLocal || fromCookie || 'light';
-    this.setTheme(initialTheme);
-  }
-
-  setTheme(theme: Theme): void {
-    this.themeSubject.next(theme);
-    this.storage.setLocal(THEME_STORAGE_KEY, theme);
-    this.storage.setCookie(THEME_COOKIE_KEY, theme, 365);
+  constructor() {
+    // si quieres, puedes leer de localStorage aquí
+    const stored = localStorage.getItem('app-theme') as Theme | null;
+    const initial: Theme = stored ?? 'light';
+    this.setTheme(initial);
   }
 
   toggleTheme(): void {
-    const current = this.themeSubject.getValue();
-    this.setTheme(current === 'light' ? 'dark' : 'light');
+    const next: Theme = this._theme$.value === 'light' ? 'dark' : 'light';
+    this.setTheme(next);
+  }
+
+  setTheme(theme: Theme): void {
+    this._theme$.next(theme);
+    localStorage.setItem('app-theme', theme);
+
+    const body = document.body;
+    if (theme === 'dark') {
+      body.classList.add('dark-theme');
+    } else {
+      body.classList.remove('dark-theme');
+    }
   }
 }

@@ -1,48 +1,108 @@
 .profile {
   display: flex;
-  justify-content: center;
-  padding: 24px;
+  flex-direction: column;
+  gap: 1.25rem;
+  color: var(--app-text);
 
-  mat-card {
-    width: 100%;
-    max-width: 500px;
-    padding: 16px 24px;
-  }
-
-  h2 {
-    margin-top: 0;
-    margin-bottom: 16px;
-  }
-
-  &__field {
-    width: 100%;
-    display: block;
-    margin-bottom: 12px;
-  }
-
-  &__actions {
+  &__header {
     display: flex;
-    justify-content: flex-end;
-    margin-top: 12px;
-  }
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: flex-start;
 
-  &__saved {
-    margin-top: 16px;
-    color: #2e7d32;
-    font-weight: 500;
-  }
-
-  .spinner-icon {
-    color: #1976d2;
-    animation: spin 1s linear infinite;
-  }
-
-  @keyframes spin {
-    0% {
-      transform: rotate(0deg);
+    button mat-icon {
+      margin-right: 0.35rem;
     }
-    100% {
-      transform: rotate(360deg);
+
+    @media (max-width: 640px) {
+      flex-direction: column;
+      align-items: stretch;
+
+      button {
+        align-self: flex-end;
+      }
     }
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--app-text);
+  }
+
+  &__subtitle {
+    margin: 0.25rem 0 0;
+    font-size: 0.9rem;
+    color: var(--app-text-soft);
+  }
+
+  &__card {
+    border-radius: 18px;
+    box-shadow: 0 12px 28px var(--app-border-subtle);
+    padding: 1.5rem;
+    background: var(--app-surface);
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 1.25rem;
+
+    @media (max-width: 920px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  &__column {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  &__status {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+
+    @media (max-width: 640px) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  &__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+
+    &--valid {
+      background: rgba(22, 163, 74, 0.12);
+      color: #16a34a;
+    }
+
+    &--invalid {
+      background: rgba(220, 38, 38, 0.08);
+      color: #b91c1c;
+    }
+
+    mat-icon {
+      font-size: 18px;
+      height: 18px;
+      width: 18px;
+    }
+  }
+
+  &__saving {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    color: var(--app-text-soft);
   }
 }

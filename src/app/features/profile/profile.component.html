@@ -1,64 +1,121 @@
-<section class="profile">
-  <mat-card>
-    <h2>Perfil de usuario</h2>
-    <form [formGroup]="form" (ngSubmit)="submit()">
-      <mat-form-field appearance="outline" class="profile__field">
-        <mat-label>Nombre</mat-label>
-        <input
-          #nameInput
-          matInput
-          placeholder="Tu nombre completo"
-          formControlName="name"
-        />
-        <mat-error *ngIf="form.get('name')?.invalid">
-          {{ getErrorMessage('name') }}
-        </mat-error>
-      </mat-form-field>
+<section class="profile" [formGroup]="form">
+  <header class="profile__header">
+    <div>
+      <h1 class="profile__title">Perfil de usuario</h1>
+      <p class="profile__subtitle">
+        Edita tu información básica y valida el formulario en tiempo real.
+      </p>
+    </div>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="submit()"
+      [disabled]="form.invalid || loading"
+    >
+      <mat-icon>save</mat-icon>
+      <span>Guardar cambios</span>
+    </button>
+  </header>
 
-      <mat-form-field appearance="outline" class="profile__field">
-        <mat-label>Email</mat-label>
-        <input
-          matInput
-          placeholder="ejemplo@correo.com"
-          formControlName="email"
-        />
-        <mat-icon
-          matSuffix
-          *ngIf="form.get('email')?.pending"
-          class="spinner-icon"
-          >hourglass_empty</mat-icon
-        >
-        <mat-error *ngIf="form.get('email')?.invalid">
-          {{ getErrorMessage('email') }}
-        </mat-error>
-      </mat-form-field>
+  <mat-card class="profile__card">
+    <div class="profile__grid">
+      <div class="profile__column">
+        <mat-form-field appearance="outline">
+          <mat-label>Nombre</mat-label>
+          <input
+            matInput
+            formControlName="name"
+            #nameInput
+          />
+          <mat-error *ngIf="form.get('name')?.invalid">
+            {{ getErrorMessage('name') }}
+          </mat-error>
+        </mat-form-field>
 
-      <mat-form-field appearance="outline" class="profile__field">
-        <mat-label>Nombre de usuario</mat-label>
-        <input
-          matInput
-          placeholder="usuario123"
-          formControlName="username"
-        />
-        <mat-error *ngIf="form.get('username')?.invalid">
-          {{ getErrorMessage('username') }}
-        </mat-error>
-      </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Username</mat-label>
+          <input
+            matInput
+            formControlName="username"
+            placeholder="Nombre de usuario"
+          />
+          <mat-error *ngIf="form.get('username')?.invalid">
+            {{ getErrorMessage('username') }}
+          </mat-error>
+        </mat-form-field>
 
-      <div class="profile__actions">
-        <button
-          mat-raised-button
-          color="primary"
-          type="submit"
-          [disabled]="saving || form.invalid"
-        >
-          {{ saving ? 'Guardando...' : 'Guardar cambios' }}
-        </button>
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input
+            matInput
+            formControlName="email"
+            placeholder="correo@ejemplo.com"
+          />
+          <mat-error *ngIf="form.get('email')?.invalid">
+            {{ getErrorMessage('email') }}
+          </mat-error>
+        </mat-form-field>
       </div>
-    </form>
 
-    <div *ngIf="saved" class="profile__saved">
-      ✅ Perfil guardado correctamente
+      <div class="profile__column">
+        <mat-form-field appearance="outline">
+          <mat-label>Teléfono</mat-label>
+          <input
+            matInput
+            formControlName="phone"
+            placeholder="+34 600 000 000"
+          />
+          <mat-error *ngIf="form.get('phone')?.invalid">
+            {{ getErrorMessage('phone') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Website</mat-label>
+          <input
+            matInput
+            formControlName="website"
+            placeholder="https://..."
+          />
+          <mat-error *ngIf="form.get('website')?.invalid">
+            {{ getErrorMessage('website') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Bio</mat-label>
+          <textarea
+            matInput
+            rows="4"
+            formControlName="bio"
+            placeholder="Cuéntanos algo sobre ti"
+          ></textarea>
+          <mat-error *ngIf="form.get('bio')?.invalid">
+            {{ getErrorMessage('bio') }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="profile__status">
+      <span
+        class="profile__chip"
+        [class.profile__chip--valid]="form.valid"
+        [class.profile__chip--invalid]="form.invalid"
+      >
+        <mat-icon>
+          {{ form.valid ? 'check_circle' : 'error_outline' }}
+        </mat-icon>
+        {{ form.valid ? 'Formulario válido' : 'Revisa los campos' }}
+      </span>
+
+      <span *ngIf="loading" class="profile__saving">
+        <mat-progress-spinner
+          diameter="18"
+          mode="indeterminate"
+        ></mat-progress-spinner>
+        <span>Guardando cambios...</span>
+      </span>
     </div>
   </mat-card>
 </section>

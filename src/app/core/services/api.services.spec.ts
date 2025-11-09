@@ -3,7 +3,8 @@ import {
   HttpClientTestingModule,
   HttpTestingController,
 } from '@angular/common/http/testing';
-import { ApiService, Post, User, Todo } from './api.service';
+import { ApiService } from './api.service';
+import { Post, Todo, User } from '../models/app.models';
 
 describe('ApiService', () => {
   let service: ApiService;
@@ -40,7 +41,7 @@ describe('ApiService', () => {
   });
 
   it('debería obtener un usuario con getUser', () => {
-    const dummyUser: User = {
+    const dummyUser: any = {
       id: 1,
       name: 'User',
       email: 'user@test.com',

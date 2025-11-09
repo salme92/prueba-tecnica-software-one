@@ -1,7 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { DashboardComponent } from './dashboard.component';
-import { ApiService, Post } from '../../core/services/api.service';
+import { ApiService } from '../../core/services/api.service';
+import { Post } from '../../core/models/app.models';
 
 class ApiServiceMock {
   getPosts() {

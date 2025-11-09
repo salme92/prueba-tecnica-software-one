@@ -5,15 +5,18 @@ import {
   OnInit,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+
 import { ApiService } from '../../core/services/api.service';
 import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
-import { MatCardModule } from '@angular/material/card';
 import { User } from '../../core/models/app.models';
 
 @Component({
   selector: 'app-user-card',
   standalone: true,
-  imports: [CommonModule, LoadingSpinnerComponent, MatCardModule],
+  imports: [CommonModule, LoadingSpinnerComponent, MatCardModule, MatIconModule],
   templateUrl: './user-card.component.html',
   styleUrls: ['./user-card.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -45,5 +48,20 @@ export class UserCardComponent implements OnInit {
         this.loading = false;
       },
     });
+  }
+
+  /** Iniciales del usuario para el avatar */
+  get initials(): string {
+    if (!this.user?.name) {
+      return '';
+    }
+    const parts = this.user.name.trim().split(' ');
+    if (parts.length === 1) {
+      return parts[0].charAt(0).toUpperCase();
+    }
+    return (
+      parts[0].charAt(0).toUpperCase() +
+      parts[parts.length - 1].charAt(0).toUpperCase()
+    );
   }
 }

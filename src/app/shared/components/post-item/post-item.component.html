@@ -1,8 +1,14 @@
-<li class="dashboard__item" (click)="onClick()">
-  <h3 class="dashboard__item-title">
-    #{{ post.id }} - {{ post.title }}
+<li class="post-item" (click)="onClick()">
+  <div class="post-item__header">
+    <span class="post-item__id">#{{ post.id }}</span>
+    <span class="post-item__user">User {{ post.userId }}</span>
+  </div>
+
+  <h3 class="post-item__title">
+    {{ post.title }}
   </h3>
-  <p class="dashboard__item-body">
+
+  <p class="post-item__body">
     {{ post.body }}
   </p>
 </li>

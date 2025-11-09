@@ -1,94 +1,46 @@
 <section class="activity">
   <header class="activity__header">
     <div>
-      <h2>Histórico de actividades</h2>
+      <h1 class="activity__title">Actividad reciente</h1>
       <p class="activity__subtitle">
-        Listado de tareas (todos) desde JSONPlaceholder con filtro y paginación.
+        Histórico de acciones del usuario en la aplicación.
       </p>
-    </div>
-
-    <div class="activity__actions">
-      <button mat-stroked-button type="button" (click)="scrollToFirstCompleted()">
-        Ir a la primera completada
-      </button>
-      <button mat-stroked-button type="button" (click)="loadTodos()">
-        Recargar
-      </button>
     </div>
   </header>
 
   <mat-card class="activity__card">
-    <mat-form-field appearance="outline" class="activity__filter">
-      <mat-label>Filtrar por texto</mat-label>
-      <input
-        matInput
-        type="text"
-        (keyup)="applyFilter($any($event.target).value)"
-        placeholder="Buscar en el título..."
-      />
-    </mat-form-field>
-
-    <div *ngIf="loading" class="activity__loading">
-      Cargando histórico...
+    <div *ngIf="!activities?.length" class="activity__empty">
+      <mat-icon>history</mat-icon>
+      <p>No hay actividad registrada todavía.</p>
     </div>
 
-    <div *ngIf="error && !loading" class="activity__error">
-      {{ error }}
-    </div>
-
-    <div *ngIf="!loading && !error">
-      <table mat-table [dataSource]="dataSource" class="activity__table">
-        <!-- ID -->
-        <ng-container matColumnDef="id">
-          <th mat-header-cell *matHeaderCellDef>ID</th>
-          <td
-            mat-cell
-            *matCellDef="let element; let i = index"
-            #activityRow
-          >
-            {{ element.id }}
-          </td>
-        </ng-container>
-
-        <!-- Title -->
-        <ng-container matColumnDef="title">
-          <th mat-header-cell *matHeaderCellDef>Título</th>
-          <td mat-cell *matCellDef="let element">
-            {{ element.title }}
-          </td>
-        </ng-container>
-
-        <!-- Completed -->
-        <ng-container matColumnDef="completed">
-          <th mat-header-cell *matHeaderCellDef>Completado</th>
-          <td mat-cell *matCellDef="let element">
-            <mat-checkbox [checked]="element.completed" disabled></mat-checkbox>
-          </td>
-        </ng-container>
-
-        <!-- userId -->
-        <ng-container matColumnDef="userId">
-          <th mat-header-cell *matHeaderCellDef>Usuario</th>
-          <td mat-cell *matCellDef="let element">
-            {{ element.userId }}
-          </td>
-        </ng-container>
-
-        <!-- Header y filas -->
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr
-          mat-row
-          *matRowDef="let row; columns: displayedColumns"
-          #activityRow
-        ></tr>
-      </table>
-
-      <mat-paginator
-        [pageSize]="10"
-        [pageSizeOptions]="[5, 10, 20]"
-        showFirstLastButtons
+    <ul *ngIf="activities?.length" class="activity__timeline">
+      <li
+        class="activity__item"
+        *ngFor="let item of activities; trackBy: trackByActivity"
       >
-      </mat-paginator>
-    </div>
+        <div class="activity__icon-wrapper">
+          <mat-icon class="activity__icon">
+            {{ item.icon || 'event' }}
+          </mat-icon>
+          <span class="activity__dot"></span>
+        </div>
+
+        <div class="activity__content">
+          <div class="activity__row">
+            <h3 class="activity__item-title">{{ item.title }}</h3>
+            <span class="activity__date">{{ item.date | date: 'short' }}</span>
+          </div>
+
+          <p class="activity__item-desc">
+            {{ item.description }}
+          </p>
+
+          <span class="activity__tag">
+            {{ item.type | titlecase }}
+          </span>
+        </div>
+      </li>
+    </ul>
   </mat-card>
 </section>

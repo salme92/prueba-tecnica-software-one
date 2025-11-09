@@ -1,24 +1,67 @@
 .user-card {
-  &__name {
-    margin: 0 0 4px;
-    font-size: 1.1rem;
-    font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border-radius: 16px;
+  padding: 0.9rem 1rem;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+  background: radial-gradient(circle at top left, #eff6ff 0, #ffffff 45%);
+
+  &--placeholder {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 90px;
+    border-radius: 16px;
+    background: #f3f4f6;
   }
 
-  &__email {
+  &__avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #1976d2, #4f46e5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 1rem;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+
+  &__content {
+    flex: 1;
+  }
+
+  &__name {
     margin: 0;
-    font-size: 0.9rem;
-    color: #555;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #111827;
   }
 
   &__username {
-    margin-top: 4px;
-    font-size: 0.85rem;
-    color: #777;
+    margin: 0.1rem 0 0.35rem;
+    font-size: 0.8rem;
+    color: #6b7280;
   }
 
-  &__error {
-    color: #c62828;
+  &__email,
+  &__meta {
     margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.83rem;
+    color: #374151;
+
+    mat-icon {
+      font-size: 18px;
+      height: 18px;
+      width: 18px;
+      color: #2563eb;
+    }
   }
 }

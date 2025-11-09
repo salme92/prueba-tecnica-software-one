@@ -1,46 +1,52 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
-import { MatToolbarModule } from '@angular/material/toolbar';
+import { NgIf } from '@angular/common';
+
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatListModule } from '@angular/material/list';
-import { MatIconModule } from '@angular/material/icon';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
-import { NgClass, AsyncPipe } from '@angular/common';
-import { ThemeService, Theme } from '../../core/services/theme.service';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
+
+import { ThemeService } from '../../core/services/theme.service';
 
 @Component({
   selector: 'app-main-layout',
   standalone: true,
+  templateUrl: './main-layout.component.html',
+  styleUrls: ['./main-layout.component.scss'],
   imports: [
+    // Angular
+    NgIf,
     RouterOutlet,
     RouterLink,
     RouterLinkActive,
-    MatToolbarModule,
+    // Material
     MatSidenavModule,
-    MatListModule,
-    MatIconModule,
+    MatToolbarModule,
     MatButtonModule,
+    MatIconModule,
+    MatListModule,
+    MatMenuModule,
     MatTooltipModule,
-    NgClass,
-    AsyncPipe,
   ],
-  templateUrl: './main-layout.component.html',
-  styleUrls: ['./main-layout.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MainLayoutComponent {
-  theme$;
+  private readonly themeService = inject(ThemeService);
 
-  constructor(private themeService: ThemeService) {
-    this.theme$ = this.themeService.theme$;
+  isDarkTheme = false;
+  currentYear = new Date().getFullYear();
+
+  constructor() {
+    // si tu ThemeService expone un observable, puedes sincronizarlo aquí
+    this.themeService.theme$.subscribe((theme) => {
+      this.isDarkTheme = theme === 'dark';
+    });
   }
 
   toggleTheme(): void {
     this.themeService.toggleTheme();
-  }
-
-  setTheme(theme: Theme): void {
-    this.themeService.setTheme(theme);
   }
 }

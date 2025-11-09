@@ -1,107 +1,63 @@
-import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  QueryList,
-  ViewChild,
-  ViewChildren,
-  ElementRef,
-} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ApiService } from '../../core/services/api.service';
-import { MatTableModule, MatTableDataSource } from '@angular/material/table';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatCheckboxModule } from '@angular/material/checkbox';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { CommonModule, DatePipe } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { Todo } from '../../core/models/app.models';
+import { MatIconModule } from '@angular/material/icon';
+
+interface ActivityItem {
+  id: number;
+  type: 'post' | 'profile' | 'settings' | 'system';
+  title: string;
+  description: string;
+  date: Date;
+  icon?: string;
+}
 
 @Component({
   selector: 'app-activity',
   standalone: true,
-  imports: [
-    CommonModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatCheckboxModule,
-    MatCardModule,
-    MatButtonModule,
-  ],
   templateUrl: './activity.component.html',
   styleUrls: ['./activity.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [CommonModule, MatCardModule, MatIconModule, DatePipe],
 })
-export class ActivityComponent implements AfterViewInit {
-  displayedColumns: string[] = ['id', 'title', 'completed', 'userId'];
-  dataSource = new MatTableDataSource<Todo>([]);
-  loading = false;
-  error: string | null = null;
+export class ActivityComponent {
+  // Datos de ejemplo para el histórico
+  activities: ActivityItem[] = [
+    {
+      id: 1,
+      type: 'post',
+      title: 'Nuevo post creado',
+      description: 'Has creado un nuevo post de prueba desde el dashboard.',
+      date: new Date(),
+      icon: 'post_add',
+    },
+    {
+      id: 2,
+      type: 'profile',
+      title: 'Perfil actualizado',
+      description: 'Has actualizado tu información de perfil.',
+      date: new Date(new Date().getTime() - 1000 * 60 * 30),
+      icon: 'person',
+    },
+    {
+      id: 3,
+      type: 'settings',
+      title: 'Preferencias guardadas',
+      description: 'Has modificado la configuración de tema y notificaciones.',
+      date: new Date(new Date().getTime() - 1000 * 60 * 60 * 3),
+      icon: 'settings',
+    },
+    {
+      id: 4,
+      type: 'system',
+      title: 'Sesión iniciada',
+      description: 'Inicio de sesión en el dashboard.',
+      date: new Date(new Date().getTime() - 1000 * 60 * 60 * 24),
+      icon: 'login',
+    },
+  ];
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-
-  // Ejemplo de ViewChildren: referenciamos las filas del tbody
-  @ViewChildren('activityRow')
-  rows!: QueryList<ElementRef<HTMLTableRowElement>>;
-
-  constructor(
-    private api: ApiService,
-    private cdr: ChangeDetectorRef
-  ) {
-    this.loadTodos();
-  }
-
-  ngAfterViewInit(): void {
-    // Cuando ya tengamos el paginator, lo conectamos al dataSource
-    this.dataSource.paginator = this.paginator;
-  }
-
-  loadTodos(): void {
-    this.loading = true;
-    this.error = null;
-    this.cdr.markForCheck();
-
-    this.api.getTodos().subscribe({
-      next: (todos) => {
-        this.dataSource.data = todos;
-        this.loading = false;
-        this.cdr.markForCheck();
-      },
-      error: (err) => {
-        console.error('Error cargando histórico', err);
-        this.error = 'No se pudo cargar el histórico de actividades.';
-        this.loading = false;
-        this.cdr.markForCheck();
-      },
-    });
-  }
-
-  applyFilter(value: string): void {
-    const filterValue = value.trim().toLowerCase();
-    this.dataSource.filter = filterValue;
-  }
-
-  scrollToFirstCompleted(): void {
-    const firstCompletedIndex = this.dataSource.data.findIndex(
-      (t) => t.completed
-    );
-    if (firstCompletedIndex < 0) {
-      return;
-    }
-
-    // Usamos ViewChildren para acceder a la fila correspondiente
-    const rowsArray = this.rows.toArray();
-    const row = rowsArray[firstCompletedIndex];
-    if (row) {
-      row.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      row.nativeElement.classList.add('highlight');
-      setTimeout(() => {
-        row.nativeElement.classList.remove('highlight');
-      }, 1500);
-    }
+  trackByActivity(index: number, item: ActivityItem): number {
+    return item.id;
   }
 }
