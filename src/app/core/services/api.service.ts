@@ -16,6 +16,13 @@ export interface User {
   username?: string;
 }
 
+export interface Todo {
+  userId: number;
+  id: number;
+  title: string;
+  completed: boolean;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -64,5 +71,10 @@ export class ApiService {
     }
 
     return this.http.get<User[]>(`${this.baseUrl}/users`, { params: httpParams });
+  }
+
+  // ===== TODOS (para Activity / histórico) =====
+  getTodos(): Observable<Todo[]> {
+    return this.http.get<Todo[]>(`${this.baseUrl}/todos`);
   }
 }
