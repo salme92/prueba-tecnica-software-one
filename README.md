@@ -4,7 +4,7 @@
 
 | 👨‍💻 **Autor** | 📅 **Fecha de entrega** | 🧠 **Nivel evaluado** | ⚙️ **Framework** |
 | :--- | :--- | :--- | :--- |
-| *Alberto Treky* | Noviembre 2025 | Intermedio (2–3 años exp.) | Angular 18 + TypeScript + SCSS + Angular Material |
+| *Alberto Salmerón Tapia* | Noviembre 2025 | Intermedio (2–3 años exp.) | Angular 18 + TypeScript + SCSS + Angular Material |
 
 ---
 
